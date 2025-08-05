@@ -1,5 +1,6 @@
 package com.example.inventoryapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.activity.enableEdgeToEdge
@@ -25,7 +26,9 @@ class MainActivity : AppCompatActivity() {
         val btnExportReport: Button = findViewById(R.id.btnExportReport)
 
         btnStartInventory.setOnClickListener {
-            // TODO: 跳轉至盤點畫面
+            // 跳轉至掃描畫面（BarcodeScanActivity）
+            val intent = Intent(this, BarcodeScanActivity::class.java)
+            startActivity(intent)
         }
 
         btnSearchProduct.setOnClickListener {
