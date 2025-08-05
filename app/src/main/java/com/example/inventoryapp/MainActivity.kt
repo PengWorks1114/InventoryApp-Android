@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         btnSearchProduct.setOnClickListener {
-            // TODO: 跳轉至查詢畫面 
+            // TODO: 跳轉至查詢畫面
         }
 
         btnExportReport.setOnClickListener {
