@@ -1,5 +1,6 @@
 package com.example.inventoryapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -72,8 +73,14 @@ class InventoryEditActivity : AppCompatActivity() {
 
                 launch(Dispatchers.Main) {
                     Toast.makeText(this@InventoryEditActivity, "更新成功", Toast.LENGTH_SHORT).show()
-                    finish() // 回前一頁
+
+                    // 👉 更新成功後，回到掃描畫面 BarcodeScanActivity
+                    val intent = Intent(this@InventoryEditActivity, BarcodeScanActivity::class.java)
+                    startActivity(intent)
+
+                    finish() // 結束當前編輯畫面
                 }
+
             }
         }
     }
