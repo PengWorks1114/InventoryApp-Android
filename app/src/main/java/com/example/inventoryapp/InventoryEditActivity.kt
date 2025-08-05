@@ -6,6 +6,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.inventoryapp.model.AppDatabase
 import com.example.inventoryapp.model.Product
+import com.example.inventoryapp.model.StockLog
 import kotlinx.coroutines.*
 
 class InventoryEditActivity : AppCompatActivity() {
@@ -68,8 +69,18 @@ class InventoryEditActivity : AppCompatActivity() {
 
             // 更新庫存數量（備註目前不處理）
             CoroutineScope(Dispatchers.IO).launch {
+                // 更新商品庫存
                 val updatedProduct = product!!.copy(stock_quantity = newQty)
                 AppDatabase.getDatabase(applicationContext).productDao().updateProduct(updatedProduct)
+
+                // 建立盤點紀錄
+                val log = StockLog(
+                    product_id = product!!.id,
+                    input_quantity = newQty,
+                    memo = edtMemo.text.toString(),
+                    updated_at = System.currentTimeMillis()
+                )
+                AppDatabase.getDatabase(applicationContext).stockLogDao().insertLog(log)
 
                 launch(Dispatchers.Main) {
                     Toast.makeText(this@InventoryEditActivity, "更新成功", Toast.LENGTH_SHORT).show()
