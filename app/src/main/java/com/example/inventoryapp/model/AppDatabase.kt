@@ -6,8 +6,9 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-// 定義資料庫版本與包含的 Entity 類別（目前只有 Product）
-@Database(entities = [Product::class], version = 3, exportSchema = false)
+// 定義資料庫版本與包含的 Entity 類別（包含 Product 與 StockLog）
+@Database(entities = [Product::class, StockLog::class], version = 3, exportSchema = false)
+
 abstract class AppDatabase : RoomDatabase() {
     // 抽象方法：取得 DAO 實例
     abstract fun productDao(): ProductDao
