@@ -7,10 +7,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 // 定義資料庫版本與包含的 Entity 類別（目前只有 Product）
-@Database(entities = [Product::class], version = 1, exportSchema = false)
+@Database(entities = [Product::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     // 抽象方法：取得 DAO 實例
     abstract fun productDao(): ProductDao
+    abstract fun stockLogDao(): StockLogDao
 
     companion object {
         // 使用 volatile 確保多執行緒下資料一致性
