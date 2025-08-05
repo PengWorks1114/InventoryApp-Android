@@ -64,7 +64,7 @@ class AddProductActivity : AppCompatActivity() {
                 location = location,
                 unit = unit,
                 stock_quantity = quantity,
-                image_path = null
+                image_path = selectedImagePath
             )
 
             // 插入資料到 Room
