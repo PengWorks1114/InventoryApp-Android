@@ -7,7 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 // 定義資料庫版本與包含的 Entity 類別（目前只有 Product）
-@Database(entities = [Product::class], version = 2, exportSchema = false)
+@Database(entities = [Product::class], version = 3, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     // 抽象方法：取得 DAO 實例
     abstract fun productDao(): ProductDao
@@ -25,6 +25,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "inventory_db"// 指定資料庫檔名
                 )
+                    .fallbackToDestructiveMigration() // ⬅️ 自動清除資料庫並重建
                     .addCallback(object : Callback() {
                         override fun onCreate(db: SupportSQLiteDatabase) {
                             super.onCreate(db)
