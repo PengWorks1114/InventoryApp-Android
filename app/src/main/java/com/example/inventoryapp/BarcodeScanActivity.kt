@@ -51,7 +51,7 @@ class BarcodeScanActivity : AppCompatActivity() {
                 Toast.makeText(this, "掃描成功：$barcode", Toast.LENGTH_LONG).show()
 
                 // 掃描成功後：
-                val intent = Intent(this, ProductDetailActivity::class.java)
+                val intent = Intent(this, InventoryEditActivity::class.java)
                 intent.putExtra("barcode", barcode)
                 startActivity(intent)
             }
