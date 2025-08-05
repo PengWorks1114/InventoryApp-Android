@@ -1,6 +1,7 @@
 package com.example.inventoryapp
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -8,6 +9,7 @@ import com.example.inventoryapp.model.AppDatabase
 import com.example.inventoryapp.model.Product
 import com.example.inventoryapp.model.StockLog
 import kotlinx.coroutines.*
+import java.io.File
 
 class InventoryEditActivity : AppCompatActivity() {
 
@@ -45,6 +47,16 @@ class InventoryEditActivity : AppCompatActivity() {
                         原本庫存：${product!!.stock_quantity}
                     """.trimIndent()
                     txtInfo.text = info
+
+                    val imgProduct: ImageView = findViewById(R.id.imgProduct)
+
+                    product?.image_path?.let {
+                        val imgFile = File(it)
+                        if (imgFile.exists()) {
+                            imgProduct.setImageURI(Uri.fromFile(imgFile))
+                        }
+                    }
+
                 } else {
                     txtInfo.text = "查無商品（條碼：$barcode）"
                     btnUpdate.isEnabled = false
@@ -94,5 +106,7 @@ class InventoryEditActivity : AppCompatActivity() {
 
             }
         }
+
+
     }
 }

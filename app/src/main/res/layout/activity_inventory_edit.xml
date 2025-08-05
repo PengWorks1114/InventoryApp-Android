@@ -34,6 +34,14 @@
             android:hint="異常備註（可選）"
             android:layout_marginTop="8dp" />
 
+        <ImageView
+            android:id="@+id/imgProduct"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="16dp" />
+
+
         <!-- 更新按鈕 -->
         <Button
             android:id="@+id/btnUpdate"

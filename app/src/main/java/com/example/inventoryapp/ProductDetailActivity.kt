@@ -40,6 +40,7 @@ class ProductDetailActivity : AppCompatActivity() {
                         庫存：${product.stock_quantity}
                     """.trimIndent()
                     txtProductInfo.text = info
+                    
                 } else {
                     txtProductInfo.text = "查無商品資料（條碼：$barcode）"
                 }
