@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.inventoryapp.model.AppDatabase
 import com.example.inventoryapp.model.Product
 import kotlinx.coroutines.*
+import java.io.File
 
 class AddProductActivity : AppCompatActivity() {
 
@@ -77,4 +78,26 @@ class AddProductActivity : AppCompatActivity() {
             }
         }
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 101 && resultCode == RESULT_OK && data != null) {
+            val uri = data.data ?: return
+
+            // 產生儲存圖片的路徑
+            val inputStream = contentResolver.openInputStream(uri)
+            val fileName = "product_${System.currentTimeMillis()}.jpg"
+            val file = File(getExternalFilesDir(null), fileName)
+
+            val outputStream = file.outputStream()
+            inputStream?.copyTo(outputStream)
+            inputStream?.close()
+            outputStream.close()
+
+            selectedImagePath = file.absolutePath
+            imgPreview.setImageURI(uri)
+        }
+    }
+
+
 }
