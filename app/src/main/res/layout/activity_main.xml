@@ -31,6 +31,14 @@
         android:text="@string/export_report"
         android:layout_marginTop="16dp" />
 
+    <Button
+        android:id="@+id/btnViewLogs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="查看盤點紀錄"
+        android:layout_marginTop="16dp" />
+
+
 
 
 

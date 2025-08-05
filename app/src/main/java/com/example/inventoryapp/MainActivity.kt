@@ -53,5 +53,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        findViewById<Button>(R.id.btnViewLogs).setOnClickListener {
+            startActivity(Intent(this, LogListActivity::class.java))
+        }
+
+
     }
 }
