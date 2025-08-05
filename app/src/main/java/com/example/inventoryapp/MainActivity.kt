@@ -61,6 +61,11 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, AddProductActivity::class.java))
         }
 
+        findViewById<Button>(R.id.btnSettings).setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
+        }
+
+
 
 
     }
