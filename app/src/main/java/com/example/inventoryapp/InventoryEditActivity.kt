@@ -11,6 +11,7 @@ import com.example.inventoryapp.model.Product
 import com.example.inventoryapp.model.StockLog
 import kotlinx.coroutines.*
 import java.io.File
+import androidx.core.content.FileProvider // ✅ 加入 FileProvider
 
 class InventoryEditActivity : AppCompatActivity() {
 
@@ -135,14 +136,23 @@ class InventoryEditActivity : AppCompatActivity() {
         startActivityForResult(intent, 201)
     }
 
-    // 相機拍照
+    // 相機拍照（改用 FileProvider 產生安全 URI）
     private fun captureImageFromCamera() {
         val fileName = "camera_${System.currentTimeMillis()}.jpg"
         val imageFile = File(getExternalFilesDir(null), fileName)
-        cameraImageUri = Uri.fromFile(imageFile)
+
+        // ✅ 使用 FileProvider 產生安全的 Uri
+        cameraImageUri = FileProvider.getUriForFile(
+            this,
+            "${packageName}.provider",
+            imageFile
+        )
+
+        selectedImagePath = imageFile.absolutePath
 
         val intent = Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE)
         intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, cameraImageUri)
+        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
         startActivityForResult(intent, 202)
     }
 
@@ -163,13 +173,12 @@ class InventoryEditActivity : AppCompatActivity() {
                     outputStream.close()
 
                     selectedImagePath = file.absolutePath
-                    imgProduct.setImageURI(uri)
+                    imgProduct.setImageURI(Uri.fromFile(file))
                 }
             }
 
             202 -> { // 相機
                 if (resultCode == RESULT_OK && cameraImageUri != null) {
-                    selectedImagePath = cameraImageUri!!.path
                     imgProduct.setImageURI(cameraImageUri)
                 }
             }

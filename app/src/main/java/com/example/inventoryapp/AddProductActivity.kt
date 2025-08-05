@@ -10,6 +10,7 @@ import com.example.inventoryapp.model.AppDatabase
 import com.example.inventoryapp.model.Product
 import kotlinx.coroutines.*
 import java.io.File
+import androidx.core.content.FileProvider
 
 class AddProductActivity : AppCompatActivity() {
 
@@ -29,7 +30,6 @@ class AddProductActivity : AppCompatActivity() {
 
     // 儲存相機拍攝的暫存檔案 Uri
     private var cameraImageUri: Uri? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,14 +108,23 @@ class AddProductActivity : AppCompatActivity() {
         startActivityForResult(intent, 101)
     }
 
-    // 開啟相機拍照
+    // 開啟相機拍照（已改為 FileProvider 安全方式）
     private fun captureImageFromCamera() {
         val fileName = "camera_photo_${System.currentTimeMillis()}.jpg"
         val imageFile = File(getExternalFilesDir(null), fileName)
-        cameraImageUri = Uri.fromFile(imageFile)
+
+        // 使用 FileProvider 提供安全 Uri，避免 FileUriExposedException
+        cameraImageUri = FileProvider.getUriForFile(
+            this,
+            "${packageName}.provider", // 對應 Manifest 中 authority
+            imageFile
+        )
+
+        selectedImagePath = imageFile.absolutePath
 
         val intent = Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE)
         intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, cameraImageUri)
+        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
         startActivityForResult(intent, 102)
     }
 
@@ -136,14 +145,13 @@ class AddProductActivity : AppCompatActivity() {
                     outputStream.close()
 
                     selectedImagePath = file.absolutePath
-                    imgPreview.setImageURI(uri)
+                    imgPreview.setImageURI(Uri.fromFile(file)) // 預覽圖片
                 }
             }
 
             102 -> { // 相機拍照
                 if (resultCode == RESULT_OK && cameraImageUri != null) {
-                    selectedImagePath = File(cameraImageUri!!.path!!).absolutePath
-                    imgPreview.setImageURI(cameraImageUri)
+                    imgPreview.setImageURI(cameraImageUri) // 預覽圖片
                 }
             }
         }
