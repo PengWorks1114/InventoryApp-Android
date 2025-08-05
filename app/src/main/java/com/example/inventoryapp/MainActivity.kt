@@ -32,7 +32,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         btnSearchProduct.setOnClickListener {
-            // TODO: 跳轉至查詢畫面
+            // 跳轉至查詢畫面 (ProductSearchActivity)
+            val intent = Intent(this, ProductSearchActivity::class.java)
+            startActivity(intent)
         }
 
         btnExportReport.setOnClickListener {
