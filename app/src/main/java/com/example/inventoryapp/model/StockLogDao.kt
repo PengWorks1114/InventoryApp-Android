@@ -13,4 +13,8 @@ interface StockLogDao {
 
     @Query("SELECT * FROM stock_logs WHERE product_id = :productId ORDER BY updated_at DESC")
     suspend fun getLogsByProduct(productId: Int): List<StockLog>
+
+    @Query("DELETE FROM stock_logs")
+    suspend fun deleteAll()
+
 }

@@ -28,4 +28,8 @@ interface ProductDao {
     // 查詢所有商品資料
     @Query("SELECT * FROM products")
     suspend fun getAllProducts(): List<Product>
+
+    @Query("DELETE FROM products")
+    suspend fun deleteAll()
+
 }
