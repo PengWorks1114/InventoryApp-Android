@@ -1,5 +1,6 @@
 package com.example.inventoryapp
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -18,8 +19,12 @@ class InventoryEditActivity : AppCompatActivity() {
     private lateinit var edtQuantity: EditText
     private lateinit var edtMemo: EditText
     private lateinit var btnUpdate: Button
+    private lateinit var imgProduct: ImageView
+    private lateinit var btnChangeImage: Button
 
-    private var product: Product? = null // 將傳入的商品儲存起來
+    private var product: Product? = null // 儲存傳入的商品資料
+    private var cameraImageUri: Uri? = null // 相機圖片暫存位置
+    private var selectedImagePath: String? = null // 最終圖片路徑
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +35,8 @@ class InventoryEditActivity : AppCompatActivity() {
         edtQuantity = findViewById(R.id.edtQuantity)
         edtMemo = findViewById(R.id.edtMemo)
         btnUpdate = findViewById(R.id.btnUpdate)
+        imgProduct = findViewById(R.id.imgProduct)
+        btnChangeImage = findViewById(R.id.btnChangeImage)
 
         // 從 Intent 拿到條碼字串
         val barcode = intent.getStringExtra("barcode") ?: return
@@ -48,12 +55,12 @@ class InventoryEditActivity : AppCompatActivity() {
                     """.trimIndent()
                     txtInfo.text = info
 
-                    val imgProduct: ImageView = findViewById(R.id.imgProduct)
-
+                    // 顯示原圖片（若有）
                     product?.image_path?.let {
                         val imgFile = File(it)
                         if (imgFile.exists()) {
                             imgProduct.setImageURI(Uri.fromFile(imgFile))
+                            selectedImagePath = it
                         }
                     }
 
@@ -62,6 +69,19 @@ class InventoryEditActivity : AppCompatActivity() {
                     btnUpdate.isEnabled = false
                 }
             }
+        }
+
+        // 更換圖片按鈕：選擇相簿或拍照
+        btnChangeImage.setOnClickListener {
+            val options = arrayOf("從相簿選擇", "使用相機拍照")
+            AlertDialog.Builder(this)
+                .setTitle("選擇圖片來源")
+                .setItems(options) { _, which ->
+                    when (which) {
+                        0 -> selectImageFromGallery()
+                        1 -> captureImageFromCamera()
+                    }
+                }.show()
         }
 
         // 點擊更新按鈕
@@ -79,13 +99,16 @@ class InventoryEditActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // 更新庫存數量（備註目前不處理）
+            // 使用協程更新庫存資料
             CoroutineScope(Dispatchers.IO).launch {
-                // 更新商品庫存
-                val updatedProduct = product!!.copy(stock_quantity = newQty)
+                // 更新商品（含圖片路徑）
+                val updatedProduct = product!!.copy(
+                    stock_quantity = newQty,
+                    image_path = selectedImagePath
+                )
                 AppDatabase.getDatabase(applicationContext).productDao().updateProduct(updatedProduct)
 
-                // 建立盤點紀錄
+                // 新增一筆盤點紀錄
                 val log = StockLog(
                     product_id = product!!.id,
                     input_quantity = newQty,
@@ -97,16 +120,59 @@ class InventoryEditActivity : AppCompatActivity() {
                 launch(Dispatchers.Main) {
                     Toast.makeText(this@InventoryEditActivity, "更新成功", Toast.LENGTH_SHORT).show()
 
-                    // 👉 更新成功後，回到掃描畫面 BarcodeScanActivity
-                    val intent = Intent(this@InventoryEditActivity, BarcodeScanActivity::class.java)
-                    startActivity(intent)
-
-                    finish() // 結束當前編輯畫面
+                    // 回到掃描畫面
+                    startActivity(Intent(this@InventoryEditActivity, BarcodeScanActivity::class.java))
+                    finish()
                 }
-
             }
         }
+    }
 
+    // 相簿選擇圖片
+    private fun selectImageFromGallery() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "image/*"
+        startActivityForResult(intent, 201)
+    }
 
+    // 相機拍照
+    private fun captureImageFromCamera() {
+        val fileName = "camera_${System.currentTimeMillis()}.jpg"
+        val imageFile = File(getExternalFilesDir(null), fileName)
+        cameraImageUri = Uri.fromFile(imageFile)
+
+        val intent = Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE)
+        intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, cameraImageUri)
+        startActivityForResult(intent, 202)
+    }
+
+    // 處理相簿/相機返回圖片
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+            201 -> { // 相簿
+                if (resultCode == RESULT_OK && data != null) {
+                    val uri = data.data ?: return
+                    val inputStream = contentResolver.openInputStream(uri)
+                    val fileName = "gallery_${System.currentTimeMillis()}.jpg"
+                    val file = File(getExternalFilesDir(null), fileName)
+                    val outputStream = file.outputStream()
+                    inputStream?.copyTo(outputStream)
+                    inputStream?.close()
+                    outputStream.close()
+
+                    selectedImagePath = file.absolutePath
+                    imgProduct.setImageURI(uri)
+                }
+            }
+
+            202 -> { // 相機
+                if (resultCode == RESULT_OK && cameraImageUri != null) {
+                    selectedImagePath = cameraImageUri!!.path
+                    imgProduct.setImageURI(cameraImageUri)
+                }
+            }
+        }
     }
 }
