@@ -57,6 +57,11 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, LogListActivity::class.java))
         }
 
+        findViewById<Button>(R.id.btnAddProduct).setOnClickListener {
+            startActivity(Intent(this, AddProductActivity::class.java))
+        }
+
+
 
     }
 }

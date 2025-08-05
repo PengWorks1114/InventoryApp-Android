@@ -38,6 +38,14 @@
         android:text="查看盤點紀錄"
         android:layout_marginTop="16dp" />
 
+    <Button
+        android:id="@+id/btnAddProduct"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="新增商品"
+        android:layout_marginTop="16dp" />
+
+
 
 
 
