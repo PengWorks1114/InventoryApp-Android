@@ -1,5 +1,6 @@
 package com.example.inventoryapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -33,6 +34,15 @@ class AddProductActivity : AppCompatActivity() {
         edtUnit = findViewById(R.id.edtUnit)
         edtQuantity = findViewById(R.id.edtQuantity)
         btnAdd = findViewById(R.id.btnAdd)
+
+        btnPickImage = findViewById(R.id.btnPickImage)
+        imgPreview = findViewById(R.id.imgPreview)
+
+        btnPickImage.setOnClickListener {
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            intent.type = "image/*"
+            startActivityForResult(intent, 101)
+        }
 
         btnAdd.setOnClickListener {
             val name = edtName.text.toString()
