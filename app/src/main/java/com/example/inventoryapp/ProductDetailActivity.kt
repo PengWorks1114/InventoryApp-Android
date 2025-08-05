@@ -1,12 +1,15 @@
 package com.example.inventoryapp
 
+import android.net.Uri
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.inventoryapp.model.AppDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
 
 class ProductDetailActivity : AppCompatActivity() {
 
@@ -19,6 +22,8 @@ class ProductDetailActivity : AppCompatActivity() {
 
         // 綁定 UI 元件
         txtProductInfo = findViewById(R.id.txtProductInfo)
+
+        val imgProductDetail = findViewById<ImageView>(R.id.imgProductDetail)
 
         // 從 Intent 中取出條碼字串
         val barcode = intent.getStringExtra("barcode") ?: return
@@ -40,7 +45,15 @@ class ProductDetailActivity : AppCompatActivity() {
                         庫存：${product.stock_quantity}
                     """.trimIndent()
                     txtProductInfo.text = info
-                    
+
+                    // 顯示圖片（如果有的話）
+                    product.image_path?.let {
+                        val file = File(it)
+                        if (file.exists()) {
+                            imgProductDetail.setImageURI(Uri.fromFile(file))
+                        }
+                    }
+
                 } else {
                     txtProductInfo.text = "查無商品資料（條碼：$barcode）"
                 }
