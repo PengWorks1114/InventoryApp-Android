@@ -17,6 +17,11 @@ class AddProductActivity : AppCompatActivity() {
     private lateinit var edtQuantity: EditText
     private lateinit var btnAdd: Button
 
+    private lateinit var btnPickImage: Button
+    private lateinit var imgPreview: ImageView
+    private var selectedImagePath: String? = null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_product)
