@@ -18,6 +18,14 @@
         android:text="@string/start_inventory" />
 
     <Button
+        android:id="@+id/btnViewInventory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="庫存一覽"
+        android:layout_marginTop="16dp"/>
+
+
+    <Button
         android:id="@+id/btnSearchProduct"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

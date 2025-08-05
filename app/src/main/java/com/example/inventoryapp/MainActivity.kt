@@ -65,6 +65,10 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, SettingsActivity::class.java))
         }
 
+        val btnViewInventory = findViewById<Button>(R.id.btnViewInventory)
+        btnViewInventory.setOnClickListener {
+            startActivity(Intent(this, InventoryListActivity::class.java))
+        }
 
 
 
