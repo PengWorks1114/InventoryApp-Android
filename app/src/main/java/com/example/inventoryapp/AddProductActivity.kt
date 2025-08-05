@@ -45,6 +45,13 @@ class AddProductActivity : AppCompatActivity() {
             startActivityForResult(intent, 101)
         }
 
+        // 若有從 Intent 傳來的條碼，則預填到條碼欄位
+        val intentBarcode = intent.getStringExtra("barcode")
+        if (!intentBarcode.isNullOrEmpty()) {
+            edtBarcode.setText(intentBarcode)
+        }
+
+
         btnAdd.setOnClickListener {
             val name = edtName.text.toString()
             val barcode = edtBarcode.text.toString()
