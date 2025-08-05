@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">InventoryApp</string>
+    <string name="start_inventory">開始盤點</string>
+    <string name="search_product">查詢商品</string>
+    <string name="export_report">匯出報表</string>
+</resources>
