@@ -50,8 +50,10 @@ class BarcodeScanActivity : AppCompatActivity() {
                 val barcode = result.contents
                 Toast.makeText(this, "掃描成功：$barcode", Toast.LENGTH_LONG).show()
 
-                // 📌 TODO: 未來這裡可加上資料庫查詢並跳轉至查詢頁面
-                // 例如：startActivity(Intent(this, ProductDetailActivity::class.java).putExtra("barcode", barcode))
+                // 掃描成功後：
+                val intent = Intent(this, ProductDetailActivity::class.java)
+                intent.putExtra("barcode", barcode)
+                startActivity(intent)
             }
 
             // 掃描完畢後自動返回前一畫面
